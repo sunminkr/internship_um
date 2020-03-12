@@ -1,0 +1,28 @@
+Abt-Buy
+Amazon-GoogleProducts
+Anime
+baby_product: ext_id (unique), weight(blank), brand(blank), is_discounted(blank)
+Beer
+Bike: city(blank), model(blank)
+Books1
+Books2
+Books3
+Books4: publication_date(blank)
+Books5: few feature column
+Citation
+DBLP-ACM
+DBLP-Scholar
+Ebooks1: rating_value(blank)
+Ebooks2: rating_value(blank)
+Electronics
+Movies1
+Movies3
+Movies5
+Music
+Restaurant1
+Restaurant2
+Restaurant3: city(blank), state(blank), priceRange(blank)
+Restaurant4
+
+
+

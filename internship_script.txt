@@ -1,0 +1,52 @@
+Hello, my name is Sun Min Lee and today I'm here to talk to you about my whole internship research on entity matching using supervised learning. 
+
+This is the contents of my presentation today.
+
+First, I would like to talk to you about the motivation of this project. 
+
+It starts with what entity resolution is. 
+The entity resolution is the task of disambiguating manifestations of real-world entities in various records by linking and grouping. 
+There are problems makes the entity resolution hard which are unstructured, free text and image content, use of heterogeneous names and abbreviations, missing and incomplete data, typos, transposition and data errors. 
+There are different methods to solve these problems and the benchmark datasets used on that. I've collected benchmark datasets from several previous experiments, to see how it works, and what kind of data set will be good.
+
+This is an overview of my work. The specific question that I'm going to be answering for the whole process is "What are 'good' data sets for further experiment.
+So, first, explore and profile existing benchmark data sets for entity matching,
+next execute the complete matching pipeline which is creating a gold standard, creating feature, filtering, matching, and evaluation. 
+Then, I tried different classifiers to see how they behave for different data sets.
+Last I'd filtered out data sets that are "good" for further experiments.
+
+Preprocessing
+I explored 7 papers and found 25 data sets that are used.
+
+This are the statistics of collected data sets. This table shows brief information on 21 data sets which are products, books, citations, entertainments, and places. These have around 8,000 source entities on average, around 7,200 target entities on average and average 427 entity pairs in the gold standard. Most of them have between 8 to 15 features.
+
+The interesting fact about these data sets is that entity pairs of the gold standard are always less than 1,000 even though some of them have more than 10,000 source entities. Because the gold standard is the main data that is used for a machine learning experiment, it's clear to say these data sets are quite small.
+
+This table shows the information of 4 data sets which are found from database group Leipzig. These have around 2,000 source entities on average and a minimum of around 1,000 to a maximum of more than 60,000 target entities. They all have 4 to 5 features. As you can see on this Lowest density, the DBLP-ACM data set has only a few missing values. The existing gold standards for these data sets only have Entity pairs which means they only have positives.
+
+So, I've created extending the gold standard by creating negative pairs from positives. I've created 2 different files that would be used for each training and test data in machine learning. The negative pairs on these created gold standard are around 5 times positive pairs.
+
+Next, I've created feature files. The supported data types of feature values are string, long string, numeric, and date type. For each data type, used different similarity metrics. For string and long string type, I used cosine similarity, cosine similarity with tf-idf score, the Levenshtein distance, overlap, Jaccard index, and containment. For numeric type, absolute difference and number equal are used. For date type, I use the absolute difference of each day, month, and year. 
+
+The method of creating feature files is first to get the feature that exists in both source and target files, second get types of each feature data. If the type of source feature and target feature are different, then assigned both to string type. Last, calculate the similarity scores using similarity metrics.
+
+Finally, with the created file, I've cleared unnecessary feature columns which are unique, or empty. For example, this table is the created feature file of the baby product data set. The dark column, extended id is a unique value which cannot be used for other data set. So I've deleted it. These white columns, brand, and weight all have -1 value which means the original data of this feature is empty. So I also deleted those.
+
+These are the output materials.
+I've made 25 data sets files which have the source, target, gold standard, feature files in, and statistics of those data sets.
+
+Next step is the evaluation
+
+This is the environment when running machine learning. I used python and  scikit-learn framework to run machine learning. These are the classifiers used for this supervised learning experiment. I used 7 classifiers which are K Nearest Neighborhood, Support vector machines, Decision Tree, Random Forest, Naive Bayes, Logistic Regression, XGBoost.
+The reason for selecting these classifiers is that those are well-known classifiers and show quite high accuracy scores on binary classification.
+
+This graph shows the average precision, recall and f1 score of 7 classifiers on 25 data sets. Decision Tree and Random Forest classifier show the high score which is around 0.9, KNN and Naive Bayes classifiers show relatively low score which is around 0.8. All the classifiers have over 0.75 F1 score.
+
+This graph is the F1 scores of classifiers on all individual data sets. On 10 data sets, all classifiers show above 0.9 f1 score. On 14 data sets, the average F1 score of classifiers is above 0.9. The data set which has the lowest average f1 is Books2 with 0.215, and next is the baby product with 0.518. The data set which has the highest average f1 is Movies3 with 0.986, and next is Anime with 0.985 f1 scores. There are some data sets that looks interesting which is Books5, the only one has below 0.4 on all classifiers, and restaurants2, which only KNN classifier shows below 0.2 f1 scores which others have good scores.
+
+So I specifically looked at these two data sets. On Books5 except for naive Bayes, all the classifiers show around 0.2 f1 score which is low compared to the other data sets. So I've looked at the decision tree of this data set and it only has a depth of 6. Compare to the other data sets the depth of this data set is not big. So I looked at the feature file and found that there are only 6 attributes. The number of attributes of the feature file is usually over 15 in other data sets, I can guess the problem of this low score is because of the small feature file. On Restaurants2 data sets only KNN shows around 0.2 f1 scores while other classifiers show even close to 1. I could find this graph on different data sets like Restaurants1 and Books3. So I can guess some classifiers have relatively poor performance. So I got the conclusion that the size of the feature file affects the score of evaluation, and some classifiers have lower accuracy compare to the other classifiers.
+
+There is also an interesting fact on the Decision Tree classifier. Both data sets have over 0.96 f1 score which is high. but the DBLP-Scholar data set has a depth of 12 which books3 data set only has a depth of 3. By looking at this tree model, I found that the books3 data set is relatively easy than the DBLP-Scholar data set. 
+
+To summarize the results.
+I deleted classifiers with the relatively low f1 scores from the graph above. So these 4 classifiers are the one with good performance. We can see these red circled data sets which are anime, books3, ebooks2, Movies3. Those achieve near 100% f1 which is not good data sets because these already show the high accuracy score on existing classifiers. The data sets with these green circled data sets have a comparatively low f1 score which is below 0.8 on average. I think these could be good data sets for further experiments.
